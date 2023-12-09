@@ -28,32 +28,28 @@ double pop(void)
     }
 }
 
-int getch(void) /* взять (возможно возвращенный) символ */ {
-    return getchar();
-}
-
 /* getop: получает следующий оператор или операнд */
 int getop(char s[])
 {   
-    if (MAXOP < 2) {
+    if (MAXOP < 1) {
         printf( "Error: reach the MAXOP\n");
         exit (1);
     } 
     int i, c;
-    while ((s[0] = c = getch()) == ' ' || c == '\t');
+    while ((s[0] = c = getchar()) == ' ' || c == '\t');
     s[1] = '\0';
     if (!isdigit(c) && c != '.')
         return c; /* не число */
     i = 0;
     if (isdigit(c)) /* накапливаем целую часть */
-        while (isdigit(s[++i] = c = getch())) {
+        while (isdigit(s[++i] = c = getchar())) {
             if (MAXOP < i + 1) {
                 printf( "Error: reach the MAXOP\n");
                 exit (1);
             } 
         }
     if (c == '.') /* накапливаем дробную часть */
-        while (isdigit(s[++i] = c = getch())) {
+        while (isdigit(s[++i] = c = getchar())) {
             if (MAXOP < i + 1) {
                 printf( "Error: reach the MAXOP\n");
                 exit (1);

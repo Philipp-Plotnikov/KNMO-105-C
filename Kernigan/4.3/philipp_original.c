@@ -2,7 +2,7 @@
 #include <stdlib.h> /* для atof() */
 #include <ctype.h>
 
-#define MAXOP 100 /* макс. размер операнда или оператора */
+#define MAXOP 3 /* макс. размер операнда или оператора */
 #define NUMBER '0' /* признак числа */
 #define MAXVAL 100 /* максимальная глубина стека */
 #define BUFSIZE 100
@@ -28,37 +28,34 @@ double pop(void)
     }
 }
 
-char buf[BUFSIZE]; /* буфер для ungetch */
-int bufp = 0; /* след, свободная позиция в буфере */
-
-int getch(void) /* взять (возможно возвращенный) символ */ {
-    return (bufp > 0) ? buf[--bufp] : getchar();
-}
-
-void ungetch(int c) /* вернуть символ на ввод */
-{
-    if (bufp >= BUFSIZE)
-        printf ("ungetch: слишком много символов\n");
-    else
-        buf[bufp++] = c;
-}
-
 /* getop: получает следующий оператор или операнд */
 int getop(char s[])
-{
+{   
+    if (MAXOP < 1) {
+        printf( "Error: reach the MAXOP\n");
+        exit (1);
+    } 
     int i, c;
-    while ((s[0] = c = getch()) == ' ' || c == '\t' );
+    while ((s[0] = c = getchar()) == ' ' || c == '\t');
     s[1] = '\0';
     if (!isdigit(c) && c != '.')
         return c; /* не число */
     i = 0;
     if (isdigit(c)) /* накапливаем целую часть */
-        while (isdigit(s[++i] = c = getch()));
+        while (isdigit(s[++i] = c = getchar())) {
+            if (MAXOP < i + 1) {
+                printf( "Error: reach the MAXOP\n");
+                exit (1);
+            } 
+        }
     if (c == '.') /* накапливаем дробную часть */
-        while (isdigit(s[++i] = c = getch()));
+        while (isdigit(s[++i] = c = getchar())) {
+            if (MAXOP < i + 1) {
+                printf( "Error: reach the MAXOP\n");
+                exit (1);
+            } 
+        }
     s[i] = '\0';
-    if (c != EOF)
-        ungetch(c);
     return NUMBER;
 }
 
